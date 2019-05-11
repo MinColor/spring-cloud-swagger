@@ -1,0 +1,19 @@
+server:
+  port: 9999
+spring:
+  security:
+    user:
+      name: test
+      password: test
+eureka:
+  instance:
+    hostname: localhost
+  server:
+    #enable-self-preservation: false                        #禁用自我保护模式(仅测试时使用)
+    eviction-interval-timer-in-ms: 10000                   #清理无效节点的时间间隔(ms)
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}/eureka
+

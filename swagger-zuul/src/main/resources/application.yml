@@ -1,0 +1,39 @@
+#自定义属性
+my:
+  eureka:           #注册中心的信息
+    hostname: localhost
+    post: 9999
+    name: test
+    password: test
+
+
+spring:
+  application:
+    name: swagger-zuul
+server:
+  port: 9998
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://${my.eureka.name}:${my.eureka.password}@${my.eureka.hostname}:${my.eureka.post}/eureka
+    #register-with-eureka: false   #服务注册中心也会将自己作为客户端来尝试注册自己,为true（默认）时自动生效
+    #fetch-registry: false   #检索服务选项，当设置为True(默认值)时，会进行服务检索,注册中心不负责检索服务（如果是false 就不能根据serviceID 映射到对应的服务）
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}(${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}})
+    metadata-map:
+      zone: swaggerzuul      # eureka元数据
+      lilizhou: TEST-swaggerzuul  # 不会影响客户端行为
+    lease-renewal-interval-in-seconds: 5
+zuul:
+  routes:
+    abc1:
+      path: /swagger/**
+      #url: http://127.0.0.1:8001
+      service-id: swagger-serverA
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000

@@ -1,0 +1,38 @@
+#自定义属性
+my:
+  eureka:           #注册中心的信息
+    hostname: localhost
+    post: 9999
+    name: test
+    password: test
+
+#该服务访问的端口
+server:
+  port: 8001           #【需要修改】
+
+
+#Spting配置
+spring:
+  application:
+    name: swagger-serverA #【需要修改】成自己的名字用于  负载均衡的VIP 类似
+
+#注册中配置 eureka.client.register-with-eureka=false
+    #eureka.client.fetch-registry=false
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://${my.eureka.name}:${my.eureka.password}@${my.eureka.hostname}:${my.eureka.post}/eureka
+    #register-with-eureka: false   #服务注册中心也会将自己作为客户端来尝试注册自己,为true（默认）时自动生效
+    fetch-registry: false   #检索服务选项，当设置为True(默认值)时，会进行服务检索,注册中心不负责检索服务
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}(${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}})
+    metadata-map:
+      zone: TEST      # eureka元数据
+      lilizhou: TEST-lilizhou  # 不会影响客户端行为
+    lease-renewal-interval-in-seconds: 5
+
+# spring cloud 1.0            ${spring.cloud.client.ipAddress}
+# spring could 2.0版本 需要改成${spring.cloud.client.ip-address}
